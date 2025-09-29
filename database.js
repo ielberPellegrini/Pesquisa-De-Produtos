@@ -91,6 +91,7 @@ class DatabaseConnection {
                 a.seqfamilia AS CODIGO_FAMILIA,
                 a.descreduzida AS DESCRICAO,
                 i.estqloja AS ESTOQUE,
+                i.nroempresa AS NRO_EMPRESA,
                 h.aliquotaicms AS ALIQUOTA_ICMS,
                 h.perpis AS PERCENT_PIS,
                 h.percofins AS PERCENT_COFINS,
