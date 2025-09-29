@@ -114,6 +114,7 @@ class DatabaseConnection {
             JOIN mrl_produtoempresa i on a.seqproduto = i.seqproduto
             WHERE e.indutilvenda = 'S'
               AND e.tipcodigo IN ('B','E')
+              AND i.nroempresa NOT IN (1,4,22,33,34,38)
         `;
 
        
