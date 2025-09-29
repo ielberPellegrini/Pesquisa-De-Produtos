@@ -90,6 +90,7 @@ class DatabaseConnection {
                 a.seqproduto AS CODIGO_PRODUTO,
                 a.seqfamilia AS CODIGO_FAMILIA,
                 a.descreduzida AS DESCRICAO,
+                i.estqloja AS ESTOQUE,
                 h.aliquotaicms AS ALIQUOTA_ICMS,
                 h.perpis AS PERCENT_PIS,
                 h.percofins AS PERCENT_COFINS,
@@ -109,6 +110,7 @@ class DatabaseConnection {
             JOIN MAP_FAMDIVCATEG f ON f.seqfamilia = a.seqfamilia
             JOIN mlo_prodcodfornec g ON a.seqproduto = g.seqproduto
             JOIN macv_custocomprauf h ON h.SEQFAMILIA = a.seqfamilia AND g.SEQPESSOA = h.SEQFORNECEDOR
+            JOIN mrl_produtoempresa i on a.seqproduto = i.seqproduto
             WHERE e.indutilvenda = 'S'
               AND e.tipcodigo IN ('B','E')
         `;
