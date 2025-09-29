@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1800px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
@@ -528,11 +528,11 @@
             tableBody.innerHTML = '';
             
             let headers = [
-                'EAN', 'Cod Produto', 'Cod Família', 'Descrição',
-                'Aliq ICMS', 'Percent PIS', 'Percent COFINS',
+                'EAN', 'Cod Prod', 'Cod Família', 'Descrição', 'Estoque',
+                'Nro Empresa', 'Aliq ICMS', 'Percent PIS', 'Percent COFINS',
                 'Estado Fatur', 'Embalagem', 'Fornecedor',
-                'Data Inclusão', 'Item Pesável', 'Quem Cadastrou',
-                'Número Usuário', 'Nome de Quem Cadastrou'
+                'Data Inclusão', 'Pesável', 'Nome C5',
+                'COD Usuário', 'Quem Cadastrou'
             ];
 
             headers.forEach(header => {
@@ -548,6 +548,8 @@
                     <td><strong>${item.CODIGO_PRODUTO ?? '-'}</td>
                     <td>${item.CODIGO_FAMILIA ?? '-'}</td>
                     <td>${item.DESCRICAO || '-'}</td>
+                    <td>${item.ESTOQUE ?? '-'}</td>
+                    <td>${item.NRO_EMPRESA ?? '-'}</td>
                     <td>${item.ALIQUOTA_ICMS ?? '-'}</td>
                     <td>${item.PERCENT_PIS ?? '-'}</td>
                     <td>${item.PERCENT_COFINS ?? '-'}</td>
