@@ -28,9 +28,9 @@ if not exist "node_modules" (
 
 echo.
 echo Dependencias verificadas!
-echo Iniciando servidor na porta 201...
+echo Iniciando servidor na porta 777...
 echo.
-echo Acesse: http://localhost:201
+echo Acesse: 10.101.18.219:777
 echo Pressione Ctrl+C para parar o servidor
 echo.
 
