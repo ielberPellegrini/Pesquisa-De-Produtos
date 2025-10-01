@@ -280,8 +280,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Consulta de Produtos</h1>
-            <p>Pesquisa de produtos, quem e quando cadastrado</p>
+            <h1>Consulta de Produtos Rede Fort</h1>
+            <p>Pesquisa de Produtos da Rede Fort</p>
         </div>
 
         <div class="search-section">
@@ -297,10 +297,61 @@
                             <option value="descricao">Descrição</option>
                         </select>
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="searchValue">Valor:</label>
                         <input type="text" id="searchValue" placeholder="Digite o EAN do produto">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="searchLoja">Loja:</label>
+                            <select id="searchLoja">
+                                <option value="" selected disabled>Selecione uma Loja</option>
+                                <option value="2">Loja 2</option>
+                                <option value="3">Loja 3</option>
+                                <option value="5">Loja 5</option>
+                                <option value="6">Loja 6</option>
+                                <option value="7">Loja 7</option>
+                                <option value="8">Loja 8</option>
+                                <option value="9">Loja 9</option>
+                                <option value="10">Loja 10</option>
+                                <option value="11">Loja 11</option>
+                                <option value="12">Loja 12</option>
+                                <option value="13">Loja 13</option>
+                                <option value="14">Loja 14</option>
+                                <option value="15">Loja 15</option>
+                                <option value="16">Loja 16</option>
+                                <option value="17">Loja 17</option>
+                                <option value="18">Loja 18</option>
+                                <option value="19">Loja 19</option>
+                                <option value="20">Loja 20</option>
+                                <option value="21">Loja 21</option>
+                                <option value="23">Loja 23</option>
+                                <option value="24">Loja 24</option>
+                                <option value="25">Loja 25</option>
+                                <option value="26">Loja 26</option>
+                                <option value="27">Loja 27</option>
+                                <option value="28">Loja 28</option>
+                                <option value="29">Loja 29</option>
+                                <option value="30">Loja 30</option>
+                                <option value="31">Loja 31</option>
+                                <option value="32">Loja 32</option>
+                                <option value="35">Loja 35</option>
+                                <option value="36">Loja 36</option>
+                                <option value="37">Loja 37</option>
+                                <option value="39">Loja 39</option>
+                                <option value="40">Loja 40</option>
+                                <option value="41">Loja 41</option>
+                                <option value="42">Loja 42</option>
+                                <option value="43">Loja 43</option>
+                                <option value="44">Loja 44</option>
+                                <option value="45">Loja 45</option>
+                                <option value="46">Loja 46</option>
+                                <option value="47">Loja 47</option>
+                                <option value="48">Loja 48</option>
+                                <option value="49">Loja 49</option>
+                                <option value="50">Loja 50</option>
+                            </select>
                     </div>
 
                     <div class="form-group">
@@ -460,11 +511,18 @@
             const searchType = document.getElementById('searchType').value;
             const searchValue = document.getElementById('searchValue').value.trim();
             const limit = document.getElementById('limit').value;
+            const nroEmpresa = document.getElementById('searchLoja').value;
+            
+            if (!nroEmpresa) {
+                mostrarErro('❌ Erro: Por favor, selecione uma loja para realizar a busca.');
+                return; // Para a execução da função aqui
+            }
 
             if (!searchValue) {
                 mostrarErro('❌ Erro: O campo de busca não pode estar vazio.');
                 return;
             }
+            
 
             mostrarLoading(true);
             limparMensagens();
@@ -474,6 +532,7 @@
                 let params = new URLSearchParams();
                 params.append(searchType, searchValue);
                 params.append('limit', limit);
+                params.append('nroEmpresa', nroEmpresa);
                 // A paginação ainda não está no seu backend, mas deixarei o código aqui para o futuro
                 // params.append('page', currentPage); 
                 
@@ -591,7 +650,13 @@
         function exportarParaExcel() {
             const searchType = document.getElementById('searchType').value;
             const searchValue = document.getElementById('searchValue').value.trim();
+            const nroEmpresa = document.getElementById('searchLoja').value;
             
+            if (!nroEmpresa) {
+                mostrarErro('❌ Erro: Por favor, selecione uma loja para exportar os dados.');
+                return; // Para a execução da função aqui
+            }
+
             if (!searchValue) {
                 mostrarErro('❌ Erro: Preencha o campo de busca para exportar.');
                 return;
@@ -599,6 +664,7 @@
 
             let params = new URLSearchParams();
             params.append(searchType, searchValue);
+            params.append('nroEmpresa', nroEmpresa);
             
             const url = `${API_BASE}/api/produtos/export?${params.toString()}`;
             window.open(url, '_blank');
@@ -628,6 +694,7 @@
 
         function limparResultados() {
             const searchTypeSelect = document.getElementById('searchType');
+            document.getElementById('searchLoja').value = ''; 
             document.getElementById('searchValue').value = '';
             document.getElementById('limit').value = '50';
             searchTypeSelect.value = 'ean';

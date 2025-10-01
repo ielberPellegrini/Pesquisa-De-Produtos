@@ -63,7 +63,7 @@ app.get('/api/info', (req, res) => {
 app.get('/api/produtos', async (req, res) => {
     try {
         
-        const { codigo_produto, codigo_familia, ean, descricao, limit = 100 } = req.query;
+        const { codigo_produto, codigo_familia, ean, descricao, nroEmpresa, limit = 100 } = req.query;
         
         
         if (!codigo_produto && !ean && !descricao) {
@@ -113,6 +113,7 @@ app.get('/api/produtos', async (req, res) => {
             codigoFamilia,
             eanParam,
             descricaoParam,
+            nroEmpresa ? parseInt(nroEmpresa) : null,
             limitNum
         );
         
@@ -241,12 +242,13 @@ app.get('/health', async (req, res) => {
 
 app.get('/api/produtos/export', async (req, res) => {
     try {
-        const { codigo_produto, codigo_familia, ean, descricao, limit = 1000 } = req.query;
+        const { codigo_produto, codigo_familia, ean, descricao, nroEmpresa, limit = 1000 } = req.query;
         const produtos = await db.getProdutosInfo(
             codigo_produto ? parseInt(codigo_produto) : null,
             codigo_familia ? parseInt(codigo_familia) : null,
             ean || null,
             descricao || null,
+            nroEmpresa ? parseInt(nroEmpresa) : null,
             parseInt(limit)
         );
 

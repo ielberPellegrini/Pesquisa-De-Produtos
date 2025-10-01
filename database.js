@@ -83,7 +83,7 @@ class DatabaseConnection {
         }
     }
 
-    async getProdutosInfo(codigoProduto = null, codigoFamilia = null, ean = null, descricao = null, limit = 200) {
+    async getProdutosInfo(codigoProduto = null, codigoFamilia = null, ean = null, descricao = null, nroEmpresa = null,limit = 200) {
         let query = `
             SELECT DISTINCT
                 e.codacesso AS EAN,
@@ -107,7 +107,7 @@ class DatabaseConnection {
             JOIN ge_usuario b ON a.usuarioinclusao = b.codusuario
             JOIN map_produto c ON a.seqproduto = c.seqproduto
             JOIN map_familia d ON a.seqfamilia = d.seqfamilia
-            JOIN map_prodcodigo e ON e.seqfamilia = a.seqfamilia
+            JOIN map_prodcodigo e ON e.seqfamilia = a.seqfamilia AND e.codacesso != To_char(a.seqproduto)
             JOIN MAP_FAMDIVCATEG f ON f.seqfamilia = a.seqfamilia
             JOIN mlo_prodcodfornec g ON a.seqproduto = g.seqproduto
             JOIN macv_custocomprauf h ON h.SEQFAMILIA = a.seqfamilia AND g.SEQPESSOA = h.SEQFORNECEDOR
@@ -117,30 +117,38 @@ class DatabaseConnection {
               AND i.nroempresa NOT IN (1,4,22,33,34,38)
         `;
 
-       
-        const params = [];
-        let paramCount = 1;
+        const params = {};
 
         if (codigoProduto) {
-            query += ` AND a.seqproduto = :${paramCount++}`;
-            params.push(codigoProduto);
+            query += ` AND a.seqproduto = :codigoProduto`;
+            params.codigoProduto = codigoProduto;
         }
         if (codigoFamilia) {
-            query += ` AND a.seqfamilia = :${paramCount++}`;
-            params.push(codigoFamilia);
+            query += ` AND a.seqfamilia = :codigoFamilia`;
+            params.codigoFamilia = codigoFamilia;
         }
         if (ean) {
-            query += ` AND e.codacesso = :${paramCount++}`;
-            params.push(ean);
+            query += ` AND e.codacesso = :ean`;
+            params.ean = ean;
         }
-       
         if (descricao) {
-            query += ` AND UPPER(a.descreduzida) LIKE UPPER(:${paramCount++})`;
-            params.push(`%${descricao}%`); // Adiciona os wildcards '%'
+            query += ` AND UPPER(a.descreduzida) LIKE UPPER(:descricao)`;
+            params.descricao = `%${descricao}%`;
+        }
+        if (nroEmpresa) {
+            query += ` AND i.nroempresa = :nroEmpresa`;
+            params.nroEmpresa = nroEmpresa;
         }
 
-        query += ` ORDER BY a.dtahorinclusao DESC FETCH FIRST :${paramCount++} ROWS ONLY`;
-        params.push(limit);
+        const numericLimit = parseInt(limit, 10);
+        if (isNaN(numericLimit) || numericLimit <= 0) {
+            throw new Error('Limite de resultados inválido.');
+        }
+
+        query += ` ORDER BY a.dtahorinclusao DESC FETCH FIRST ${numericLimit} ROWS ONLY`;
+
+        // A CHAMADA CORRETA JÁ ESTÁ AQUI
+        return this.executeQuery(query, params, { maxRows: numericLimit });
 
         
         try {
