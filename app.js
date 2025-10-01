@@ -17,7 +17,7 @@ app.use(helmet({
             styleSrc: ["'self'", "'unsafe-inline'"],
             imgSrc: ["'self'", "data:", "https:"],
             fontSrc: ["'self'", "https:", "data:"],
-            connectSrc: ["'self'", "http://localhost:201"]
+            connectSrc: ["'self'", "http://10.101.18.219:777"]
         }
     }
 }));
@@ -381,9 +381,9 @@ async function startServer() {
 
         const server = app.listen(config.port, () => {
             console.log(`✅ Servidor rodando na porta ${config.port}`);
-            console.log(`🌐 Acesse: http://localhost:${config.port}`);
+            console.log(`🌐 Acesse: http://10.101.18.219:${config.port}`);
             console.log(`📱 Ambiente: ${config.app.environment}`);
-            console.log(`🔗 Health Check: http://localhost:${config.port}/health`);
+            console.log(`🔗 Health Check: http://10.101.18.219:${config.port}/health`);
         });
 
         process.on('SIGINT', async () => {

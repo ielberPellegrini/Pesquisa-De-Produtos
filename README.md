@@ -65,7 +65,7 @@ npm run dev
 npm start
 ```
 
-A aplicação estará disponível em: `http://localhost:201`
+A aplicação estará disponível em: `http://10.101.18.219:777`
 
 ## 📊 Estrutura do Projeto
 
@@ -104,22 +104,22 @@ Pesquisa de cadastro de produtos/
 
 ### Buscar todos os produtos (limite 100)
 ```bash
-curl "http://localhost:201/api/produtos"
+curl "http://10.101.18.219:777/api/produtos"
 ```
 
 ### Buscar produto específico
 ```bash
-curl "http://localhost:201/api/produtos?codigo_produto=624"
+curl "http://10.101.18.219:777/api/produtos?codigo_produto=624"
 ```
 
 ### Buscar com limite personalizado
 ```bash
-curl "http://localhost:201/api/produtos?limit=50"
+curl "http://10.101.18.219:777/api/produtos?limit=50"
 ```
 
 ### Verificar saúde da aplicação
 ```bash
-curl "http://localhost:201/health"
+curl "http://10.101.18.219:777/health"
 ```
 
 ## 🧪 Testando a API
@@ -239,7 +239,7 @@ npm install oracledb
 ### Exemplo com JavaScript
 ```javascript
 // Buscar produtos
-fetch('http://localhost:201/api/produtos?limit=50')
+fetch('http://10.101.18.219:777api/produtos?limit=50')
     .then(response => response.json())
     .then(data => {
         if (data.success) {
@@ -248,7 +248,7 @@ fetch('http://localhost:201/api/produtos?limit=50')
     });
 
 // Buscar produto específico
-fetch('http://localhost:201/api/produtos?codigo_produto=624')
+fetch('http://10.101.18.219:777/api/produtos?codigo_produto=624')
     .then(response => response.json())
     .then(data => {
         if (data.success) {
@@ -262,7 +262,7 @@ fetch('http://localhost:201/api/produtos?codigo_produto=624')
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:201'
+    baseURL: 'http://10.101.18.219:777'
 });
 
 // Buscar produtos
