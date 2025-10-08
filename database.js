@@ -9,7 +9,6 @@ class DatabaseConnection {
 
     async initialize() {
         try {
-            
             try {
                 oracledb.initOracleClient({ libDir: 'C:\\oracle\\instantclient_23_8' });
                 console.log('✅ Oracle Client configurado com sucesso!');
@@ -17,7 +16,6 @@ class DatabaseConnection {
                 console.log('⚠️  Oracle Client já configurado ou não necessário');
             }
             
-            // Configurar o pool de conexões
             await oracledb.createPool(config.db);
             this.pool = oracledb.getPool();
             this.isInitialized = true;
@@ -35,7 +33,6 @@ class DatabaseConnection {
             if (!this.isInitialized) {
                 await this.initialize();
             }
-            
             const connection = await this.pool.getConnection();
             return connection;
         } catch (error) {
@@ -56,7 +53,7 @@ class DatabaseConnection {
         }
     }
 
-    async executeQuery(query, params = [], options = {}) {
+    async executeQuery(query, params = {}, options = {}) { // Mudei para params = {} para ser consistente
         let connection;
         try {
             connection = await this.getConnection();
@@ -105,16 +102,16 @@ class DatabaseConnection {
                 b.nome AS NOME_DE_QUEM_CADASTROU
             FROM map_produto a
             JOIN ge_usuario b ON a.usuarioinclusao = b.codusuario
-            JOIN map_produto c ON a.seqproduto = c.seqproduto
             JOIN map_familia d ON a.seqfamilia = d.seqfamilia
             JOIN map_prodcodigo e ON e.seqfamilia = a.seqfamilia AND e.codacesso != To_char(a.seqproduto)
             JOIN MAP_FAMDIVCATEG f ON f.seqfamilia = a.seqfamilia
             JOIN mlo_prodcodfornec g ON a.seqproduto = g.seqproduto
             JOIN macv_custocomprauf h ON h.SEQFAMILIA = a.seqfamilia AND g.SEQPESSOA = h.SEQFORNECEDOR
-            JOIN mrl_produtoempresa i on a.seqproduto = i.seqproduto
+            JOIN mrl_produtoempresa i on a.seqproduto = i.seqproduto AND a.seqproduto = g.SEQPRODUTO AND a.seqproduto = e.seqproduto
+            JOIN map_prodcodigo e ON e.codacesso = g.codacesso AND e.seqproduto = g.seqproduto
             WHERE e.indutilvenda = 'S'
               AND e.tipcodigo IN ('B','E')
-              AND i.nroempresa NOT IN (1,4,22,33,34,38)
+              AND i.nroempresa NOT IN (1,4,22,33,34,43,45,38)
         `;
 
         const params = {};
@@ -122,10 +119,6 @@ class DatabaseConnection {
         if (codigoProduto) {
             query += ` AND a.seqproduto = :codigoProduto`;
             params.codigoProduto = codigoProduto;
-        }
-        if (codigoFamilia) {
-            query += ` AND a.seqfamilia = :codigoFamilia`;
-            params.codigoFamilia = codigoFamilia;
         }
         if (ean) {
             query += ` AND e.codacesso = :ean`;
@@ -139,31 +132,15 @@ class DatabaseConnection {
             query += ` AND i.nroempresa = :nroEmpresa`;
             params.nroEmpresa = nroEmpresa;
         }
-
+        
         const numericLimit = parseInt(limit, 10);
         if (isNaN(numericLimit) || numericLimit <= 0) {
             throw new Error('Limite de resultados inválido.');
         }
-
+        
         query += ` ORDER BY a.dtahorinclusao DESC FETCH FIRST ${numericLimit} ROWS ONLY`;
 
-        // A CHAMADA CORRETA JÁ ESTÁ AQUI
         return this.executeQuery(query, params, { maxRows: numericLimit });
-
-        
-        try {
-            const connection = await this.getConnection();
-            const result = await connection.execute(
-                query,
-                params,
-                { outFormat: oracledb.OUT_FORMAT_OBJECT }
-            );
-            await connection.close();
-            return result.rows;
-        } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
-            return [];
-        }
     }
 
     async getFamilias() {

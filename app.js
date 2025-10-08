@@ -17,7 +17,7 @@ app.use(helmet({
             styleSrc: ["'self'", "'unsafe-inline'"],
             imgSrc: ["'self'", "data:", "https:"],
             fontSrc: ["'self'", "https:", "data:"],
-            connectSrc: ["'self'", "http://10.101.18.219:777","http://10.101.18.219:778"]
+            connectSrc: ["'self'", "http://localhost:201"]
         }
     }
 }));
@@ -242,27 +242,82 @@ app.get('/health', async (req, res) => {
 
 app.get('/api/produtos/export', async (req, res) => {
     try {
-        const { codigo_produto, codigo_familia, ean, descricao, nroEmpresa, limit = 1000 } = req.query;
+        const { codigo_produto, ean, descricao, nroEmpresa, limit = 2000, visibleColumns } = req.query; // Aumentei o limite para exportação
+
+        // 1. Busca os dados completos do banco, como antes
         const produtos = await db.getProdutosInfo(
             codigo_produto ? parseInt(codigo_produto) : null,
-            codigo_familia ? parseInt(codigo_familia) : null,
+            null, // codigo_familia não é usado na sua interface de busca
             ean || null,
             descricao || null,
             nroEmpresa ? parseInt(nroEmpresa) : null,
             parseInt(limit)
         );
 
-        const worksheet = XLSX.utils.json_to_sheet(produtos);
+        if (produtos.length === 0) {
+            return res.status(404).send('Nenhum dado encontrado para exportar com os filtros fornecidos.');
+        }
+
+        // 2. ===== NOVA LÓGICA PARA FILTRAR AS COLUNAS =====
+
+        // Mapeamento entre a classe CSS do frontend e a chave do JSON do banco
+        const columnMap = {
+            'col-ean': 'EAN',
+            'col-cod-prod': 'CODIGO_PRODUTO',
+            'col-descricao': 'DESCRICAO',
+            'col-estoque': 'ESTOQUE',
+            'col-nro-empresa': 'NRO_EMPRESA',
+            'col-icms': 'ALIQUOTA_ICMS',
+            'col-pis': 'PERCENT_PIS',
+            'col-cofins': 'PERCENT_COFINS',
+            'col-estado-fatur': 'ESTADO_FATUR',
+            'col-embalagem': 'EMBALAGEM',
+            'col-fornecedor': 'FORNECEDOR',
+            'col-data-inclusao': 'DIA_DA_INCLUSAO',
+            'col-pesavel': 'ITEM_PESAVEL',
+            'col-quem-cadastrou': 'NOME_DE_QUEM_CADASTROU'
+        };
+
+        // As colunas que sempre devem aparecer
+        const alwaysVisibleKeys = ['EAN', 'CODIGO_PRODUTO', 'DESCRICAO'];
+        
+        let dataToExport = produtos;
+        let headersToExport;
+
+        if (visibleColumns) {
+            const visibleClasses = visibleColumns.split(',');
+            // Pega as chaves do JSON correspondentes às classes visíveis
+            const visibleKeys = visibleClasses.map(className => columnMap[className]).filter(Boolean);
+            
+            // Garante que as colunas principais sempre existam, sem duplicatas
+            const finalKeys = [...new Set([...alwaysVisibleKeys, ...visibleKeys])];
+            
+            // Cria um novo array de objetos contendo apenas os dados das colunas selecionadas
+            dataToExport = produtos.map(produto => {
+                let newRow = {};
+                finalKeys.forEach(key => {
+                    newRow[key] = produto[key];
+                });
+                return newRow;
+            });
+
+            headersToExport = finalKeys;
+        }
+        
+        // 3. Gera o Excel com os dados já filtrados
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport, { header: headersToExport });
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Produtos');
-        const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-
-        res.setHeader('Content-Disposition', 'attachment; filename=produtos.xlsx');
+        
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=Relatorio_Produtos.xlsx');
+        
+        const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
         res.send(buffer);
+
     } catch (error) {
         console.error('❌ Erro ao exportar para Excel:', error.message);
-        res.status(500).json({ success: false, message: 'Erro ao exportar para Excel.' });
+        res.status(500).json({ success: false, message: 'Erro ao gerar o arquivo Excel.' });
     }
 });
 
@@ -381,9 +436,9 @@ async function startServer() {
 
         const server = app.listen(config.port, () => {
             console.log(`✅ Servidor rodando na porta ${config.port}`);
-            console.log(`🌐 Acesse: http://10.101.18.219:${config.port}`);
+            console.log(`🌐 Acesse: http://localhost:${config.port}`);
             console.log(`📱 Ambiente: ${config.app.environment}`);
-            console.log(`🔗 Health Check: http://10.101.18.219:${config.port}/health`);
+            console.log(`🔗 Health Check: http://localhost:${config.port}/health`);
         });
 
         process.on('SIGINT', async () => {

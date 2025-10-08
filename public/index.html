@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./fort-logo.ico" type="image/x-icon">
     <title>Consulta de Produtos</title>
     <style>
         * {
@@ -32,11 +33,15 @@
             color: white;
             padding: 20px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
 
         .header h1 {
             font-size: 2em;
-            margin-bottom: 10px;
+            margin: 0;
         }
 
         .header p {
@@ -58,7 +63,7 @@
 
         .form-group-flex {
             display: flex;
-            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha em telas menores */
+            flex-wrap: wrap;
             align-items: flex-end;
             gap: 20px;
             justify-content: center;
@@ -68,12 +73,8 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            flex-grow: 1; /* Permite que os campos cresçam para preencher o espaço */
-            min-width: 200px; /* Largura mínima para cada campo */
-        }
-        
-        .form-group.full-width {
-            flex-basis: 100%; /* Ocupa a largura total quando necessário */
+            flex-grow: 1;
+            min-width: 200px;
         }
 
         .form-group label {
@@ -90,6 +91,12 @@
             font-size: 16px;
             transition: border-color 0.3s;
             width: 100%;
+        }
+        
+        .form-group input:disabled,
+        .form-group select:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
         }
 
         .form-group input:focus,
@@ -170,6 +177,43 @@
             background: #28a745;
         }
 
+        .column-filters {
+            padding: 15px;
+            background: #f1f3f5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .column-filters strong {
+            margin-right: 10px;
+        }
+        .column-filters label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .results-table.hide-col-cod-familia .col-cod-familia,
+        .results-table.hide-col-estoque .col-estoque,
+        .results-table.hide-col-fornecedor .col-fornecedor,
+        .results-table.hide-col-icms .col-icms,
+        .results-table.hide-col-pis .col-pis,
+        .results-table.hide-col-cofins .col-cofins,
+        .results-table.hide-col-embalagem .col-embalagem,
+        .results-table.hide-col-quem-cadastrou .col-quem-cadastrou {
+            display: none;
+        }
+        .results-table.hide-col-data-inclusao .col-data-inclusao {
+            display: none;
+        }
+
+
         .loading {
             text-align: center;
             padding: 40px;
@@ -241,35 +285,11 @@
             margin: 20px 0;
             border: 1px solid #f5c6cb;
         }
-
-        #paginationControls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        #pageInfo {
-            font-weight: 600;
-            color: #495057;
-        }
         
         @media (max-width: 768px) {
-            .form-group-flex {
+            .form-group-flex, .column-filters {
                 flex-direction: column;
                 align-items: stretch;
-            }
-             .results-table {
-                font-size: 11px;
-            }
-             .results-table th,
-             .results-table td {
-                padding: 4px 6px;
-                white-space: nowrap;
-            }
-             .results-container {
-                margin: 10px -15px;
             }
              .header h1 {
                 font-size: 1.5em;
@@ -280,14 +300,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Consulta de Produtos Rede Fort</h1>
-            <p>Pesquisa de Produtos da Rede Fort</p>
+            <img src="./fort-logo.png" alt="Logo da Rede Fort" style="width: 50px; height: 50px; border-radius: 5px;">
+            <div>
+                <h1>Consulta de Produtos Rede Fort</h1>
+                <p>Pesquisa de Produtos da Rede Fort</p>
+            </div>
         </div>
 
         <div class="search-section">
             <h2 style="margin-bottom: 20px; color: #495057; text-align: center;">Filtros de Pesquisa</h2>
             <form class="search-form" id="searchForm">
-                
+
                 <div class="form-group-flex">
                     <div class="form-group">
                         <label for="searchType">Tipo de Pesquisa:</label>
@@ -305,60 +328,56 @@
 
                     <div class="form-group">
                         <label for="searchLoja">Loja:</label>
-                            <select id="searchLoja">
-                                <option value="" selected disabled>Selecione uma Loja</option>
-                                <option value="2">Loja 2</option>
-                                <option value="3">Loja 3</option>
-                                <option value="5">Loja 5</option>
-                                <option value="6">Loja 6</option>
-                                <option value="7">Loja 7</option>
-                                <option value="8">Loja 8</option>
-                                <option value="9">Loja 9</option>
-                                <option value="10">Loja 10</option>
-                                <option value="11">Loja 11</option>
-                                <option value="12">Loja 12</option>
-                                <option value="13">Loja 13</option>
-                                <option value="14">Loja 14</option>
-                                <option value="15">Loja 15</option>
-                                <option value="16">Loja 16</option>
-                                <option value="17">Loja 17</option>
-                                <option value="18">Loja 18</option>
-                                <option value="19">Loja 19</option>
-                                <option value="20">Loja 20</option>
-                                <option value="21">Loja 21</option>
-                                <option value="23">Loja 23</option>
-                                <option value="24">Loja 24</option>
-                                <option value="25">Loja 25</option>
-                                <option value="26">Loja 26</option>
-                                <option value="27">Loja 27</option>
-                                <option value="28">Loja 28</option>
-                                <option value="29">Loja 29</option>
-                                <option value="30">Loja 30</option>
-                                <option value="31">Loja 31</option>
-                                <option value="32">Loja 32</option>
-                                <option value="35">Loja 35</option>
-                                <option value="36">Loja 36</option>
-                                <option value="37">Loja 37</option>
-                                <option value="39">Loja 39</option>
-                                <option value="40">Loja 40</option>
-                                <option value="41">Loja 41</option>
-                                <option value="42">Loja 42</option>
-                                <option value="43">Loja 43</option>
-                                <option value="44">Loja 44</option>
-                                <option value="45">Loja 45</option>
-                                <option value="46">Loja 46</option>
-                                <option value="47">Loja 47</option>
-                                <option value="48">Loja 48</option>
-                                <option value="49">Loja 49</option>
-                                <option value="50">Loja 50</option>
-                            </select>
+                        <select id="searchLoja">
+                            <option value="" selected disabled>Selecione uma Loja</option>
+                            <option value="2">Loja 2</option>
+                            <option value="3">Loja 3</option>
+                            <option value="5">Loja 5</option>
+                            <option value="6">Loja 6</option>
+                            <option value="7">Loja 7</option>
+                            <option value="8">Loja 8</option>
+                            <option value="9">Loja 9</option>
+                            <option value="10">Loja 10</option>
+                            <option value="11">Loja 11</option>
+                            <option value="12">Loja 12</option>
+                            <option value="13">Loja 13</option>
+                            <option value="14">Loja 14</option>
+                            <option value="15">Loja 15</option>
+                            <option value="16">Loja 16</option>
+                            <option value="17">Loja 17</option>
+                            <option value="18">Loja 18</option>
+                            <option value="19">Loja 19</option>
+                            <option value="20">Loja 20</option>
+                            <option value="21">Loja 21</option>
+                            <option value="23">Loja 23</option>
+                            <option value="24">Loja 24</option>
+                            <option value="25">Loja 25</option>
+                            <option value="26">Loja 26</option>
+                            <option value="27">Loja 27</option>
+                            <option value="28">Loja 28</option>
+                            <option value="29">Loja 29</option>
+                            <option value="30">Loja 30</option>
+                            <option value="31">Loja 31</option>
+                            <option value="32">Loja 32</option>
+                            <option value="35">Loja 35</option>
+                            <option value="36">Loja 36</option>
+                            <option value="37">Loja 37</option>
+                            <option value="39">Loja 39</option>
+                            <option value="40">Loja 40</option>
+                            <option value="41">Loja 41</option>
+                            <option value="42">Loja 42</option>
+                            <option value="44">Loja 44</option>
+                            <option value="46">Loja 46</option>
+                            <option value="47">Loja 47</option>
+                            <option value="48">Loja 48</option>
+                            <option value="49">Loja 49</option>
+                            <option value="50">Loja 50</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label for="limit">Limite de Resultados:</label>
                         <select id="limit">
-                            <option value="10">10 registros</option>
-                            <option value="25">25 registros</option>
                             <option value="50" selected>50 registros</option>
                             <option value="100">100 registros</option>
                             <option value="200">200 registros</option>
@@ -392,9 +411,18 @@
                 <div id="resultCount"></div>
             </div>
 
-            <div id="sqlQueryBox" style="display:none; margin-bottom:20px;">
-                <h4 style="color:#dc3545;">Consulta SQL Executada:</h4>
-                <pre id="sqlQueryText" style="background:#f8f9fa; padding:10px; border-radius:8px; font-size:13px; border:1px solid #dee2e6;"></pre>
+            <div class="column-filters" id="columnFilters" style="display: none;">
+                <strong>Exibir/Ocultar Colunas:</strong>
+                <label><input type="checkbox" data-column-class="col-cod-familia" checked> Cod Família</label>
+
+                <label><input type="checkbox" data-column-class="col-estoque" checked> Estoque</label>
+                <label><input type="checkbox" data-column-class="col-fornecedor" checked> Fornecedor</label>
+                <label><input type="checkbox" data-column-class="col-icms" checked> Aliq. ICMS</label>
+                <label><input type="checkbox" data-column-class="col-pis" checked> % PIS</label>
+                <label><input type="checkbox" data-column-class="col-cofins" checked> % COFINS</label>
+                <label><input type="checkbox" data-column-class="col-embalagem" checked> Embalagem</label>
+                <label><input type="checkbox" data-column-class="col-data-inclusao" checked> Data Inclusão</label>
+                <label><input type="checkbox" data-column-class="col-quem-cadastrou" checked> Quem Cadastrou</label>
             </div>
 
             <div class="loading" id="loading" style="display: none;">
@@ -415,12 +443,6 @@
                 </div>
             </div>
             
-            <div id="paginationControls" style="display: none;">
-                <button id="btnAnterior" class="btn btn-secondary">⬅️ Anterior</button>
-                <span id="pageInfo"></span>
-                <button id="btnProxima" class="btn btn-secondary">Próxima ➡️</button>
-            </div>
-
             <div class="no-results" id="noResults" style="display: none;">
                 <h3>Nenhum resultado encontrado</h3>
                 <p>Tente ajustar os filtros de pesquisa</p>
@@ -431,68 +453,68 @@
     <script>
         const API_BASE = '';
         let currentData = [];
-        let currentPage = 1;
-        let totalPages = 1;
 
         document.addEventListener('DOMContentLoaded', function() {
             verificarStatusAPI();
 
+            // Mapeamento dos elementos
             const searchTypeSelect = document.getElementById('searchType');
             const searchValueInput = document.getElementById('searchValue');
             const searchForm = document.getElementById('searchForm');
             const btnLimpar = document.getElementById('btnLimpar');
             const btnExportar = document.getElementById('btnExportar');
-            const btnAnterior = document.getElementById('btnAnterior');
-            const btnProxima = document.getElementById('btnProxima');
+            const columnFilters = document.getElementById('columnFilters');
 
+            // --- EVENT LISTENERS ---
+
+            // Lógica para mostrar/ocultar colunas
+            columnFilters.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox') {
+                    const columnClass = e.target.getAttribute('data-column-class');
+                    const table = document.getElementById('resultsTable');
+                    table.classList.toggle('hide-' + columnClass, !e.target.checked);
+                }
+            });
+
+            // Lógica para atualizar o placeholder do campo "Valor"
             searchTypeSelect.addEventListener('change', function() {
                 const selectedType = this.value;
                 searchValueInput.value = '';
-                // Não precisamos mais alterar o type do input, o listener de input cuidará disso
                 if (selectedType === 'codigo_produto') {
                     searchValueInput.placeholder = 'Digite o código do produto';
                 } else if (selectedType === 'descricao') {
                     searchValueInput.placeholder = 'Digite parte da descrição';
-                } else { // EAN
+                } else {
                     searchValueInput.placeholder = 'Digite o EAN do produto';
                 }
                 searchValueInput.focus();
             });
 
-            // =================================================================
-            // NOVA VALIDAÇÃO ADICIONADA AQUI
-            // =================================================================
+            // Lógica para forçar apenas números
             searchValueInput.addEventListener('input', function() {
                 const selectedType = searchTypeSelect.value;
-
-                // Aplica a validação apenas para os campos EAN e Código do Produto
                 if (selectedType === 'ean' || selectedType === 'codigo_produto') {
-                    // Esta linha remove qualquer caractere que NÃO seja um número (0-9)
-                    // Funciona tanto para digitação quanto para texto colado
                     this.value = this.value.replace(/[^0-9]/g, '');
                 }
             });
 
+            // Lógica dos botões
             searchForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                executarConsulta(1);
+                executarConsulta();
             });
-
             btnLimpar.addEventListener('click', limparResultados);
             btnExportar.addEventListener('click', exportarParaExcel);
-            btnAnterior.addEventListener('click', () => {
-                if (currentPage > 1) executarConsulta(currentPage - 1);
-            });
-            btnProxima.addEventListener('click', () => {
-                if (currentPage < totalPages) executarConsulta(currentPage + 1);
-            });
         });
+
+        // --- FUNÇÕES PRINCIPAIS ---
 
         async function verificarStatusAPI() {
             const statusDot = document.getElementById('statusDot');
             const statusText = document.getElementById('statusText');
             try {
                 const response = await fetch(`${API_BASE}/health`);
+                if (!response.ok) throw new Error('API status not healthy');
                 const data = await response.json();
                 if (data.status === 'healthy') {
                     statusDot.className = 'status-dot connected';
@@ -506,24 +528,22 @@
             }
         }
         
-        async function executarConsulta(page = 1) {
-            currentPage = page;
+        async function executarConsulta() {
             const searchType = document.getElementById('searchType').value;
             const searchValue = document.getElementById('searchValue').value.trim();
-            const limit = document.getElementById('limit').value;
             const nroEmpresa = document.getElementById('searchLoja').value;
+            const limit = document.getElementById('limit').value;
             
+            // Validação original (Loja e Valor são obrigatórios)
             if (!nroEmpresa) {
                 mostrarErro('❌ Erro: Por favor, selecione uma loja para realizar a busca.');
-                return; // Para a execução da função aqui
+                return;
             }
-
             if (!searchValue) {
                 mostrarErro('❌ Erro: O campo de busca não pode estar vazio.');
                 return;
             }
             
-
             mostrarLoading(true);
             limparMensagens();
             ocultarResultados();
@@ -531,10 +551,8 @@
             try {
                 let params = new URLSearchParams();
                 params.append(searchType, searchValue);
-                params.append('limit', limit);
                 params.append('nroEmpresa', nroEmpresa);
-                // A paginação ainda não está no seu backend, mas deixarei o código aqui para o futuro
-                // params.append('page', currentPage); 
+                params.append('limit', limit);
                 
                 const url = `${API_BASE}/api/produtos?${params.toString()}`;
                 const response = await fetch(url);
@@ -553,122 +571,121 @@
             }
         }
 
-        function exibirResultados(data) {
-            // A lógica de exibição de resultados não muda
-            currentData = data.data || [];
-            exibirTabela(currentData);
-
-            const resultCount = document.getElementById('resultCount');
-            resultCount.textContent = `${currentData.length} produtos encontrados.`;
-
-            // Lógica de paginação (manter para o futuro)
-            // if(data.pagination && data.pagination.total > 0){
-            //     resultCount.textContent = `Exibindo ${currentData.length} de ${data.pagination.total} produtos encontrados.`;
-            //     atualizarControlesPaginacao(data.pagination);
-            // } else {
-            //     resultCount.textContent = `${currentData.length} produtos encontrados.`;
-            //     document.getElementById('paginationControls').style.display = 'none';
-            // }
-        }
-        
-        function exibirTabela(data) {
-            const resultsContainer = document.getElementById('resultsContainer');
-            const noResultsDiv = document.getElementById('noResults');
-
-            if (!data || data.length === 0) {
-                resultsContainer.style.display = 'none';
-                noResultsDiv.style.display = 'block';
-                return;
-            }
-
-            const tableHeader = document.getElementById('tableHeader');
-            const tableBody = document.getElementById('tableBody');
-            tableHeader.innerHTML = '';
-            tableBody.innerHTML = '';
-            
-            let headers = [
-                'EAN', 'Cod Prod', 'Cod Família', 'Descrição', 'Estoque',
-                'Nro Empresa', 'Aliq ICMS', 'Percent PIS', 'Percent COFINS',
-                'Estado Fatur', 'Embalagem', 'Fornecedor',
-                'Data Inclusão', 'Pesável', 'Nome C5',
-                'COD Usuário', 'Quem Cadastrou'
-            ];
-
-            headers.forEach(header => {
-                const th = document.createElement('th');
-                th.textContent = header;
-                tableHeader.appendChild(th);
-            });
-
-            data.forEach((item) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.EAN || '-'}</td>
-                    <td><strong>${item.CODIGO_PRODUTO ?? '-'}</td>
-                    <td>${item.CODIGO_FAMILIA ?? '-'}</td>
-                    <td>${item.DESCRICAO || '-'}</td>
-                    <td>${item.ESTOQUE ?? '-'}</td>
-                    <td>${item.NRO_EMPRESA ?? '-'}</td>
-                    <td>${item.ALIQUOTA_ICMS ?? '-'}</td>
-                    <td>${item.PERCENT_PIS ?? '-'}</td>
-                    <td>${item.PERCENT_COFINS ?? '-'}</td>
-                    <td>${item.ESTADO_FATUR ?? '-'}</td>
-                    <td>${item.EMBALAGEM ?? '-'}</td>
-                    <td>${item.FORNECEDOR ?? '-'}</td>
-                    <td>${formatarData(item.DIA_DA_INCLUSAO)}</td>
-                    <td>
-                        <span style="color: ${item.ITEM_PESAVEL === 'N' ? 'green' : 'orange'}">
-                            ${item.ITEM_PESAVEL === 'N' ? 'Não Pesável' : 'Pesável'}
-                        </span>
-                    </td>
-                    <td>${item.QUEM_CADASTROU || '-'}</td>
-                    <td>${item.NUMERO_USUARIO ?? '-'}</td>
-                    <td>${item.NOME_DE_QUEM_CADASTROU || '-'}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            noResultsDiv.style.display = 'none';
-            resultsContainer.style.display = 'block';
-        }
-        
-        function atualizarControlesPaginacao(pagination) {
-            const controls = document.getElementById('paginationControls');
-            if (!pagination || pagination.totalPages <= 1) {
-                controls.style.display = 'none';
-                return;
-            }
-            controls.style.display = 'flex';
-            
-            totalPages = pagination.totalPages;
-            
-            document.getElementById('pageInfo').textContent = `Página ${pagination.page} de ${totalPages}`;
-            document.getElementById('btnAnterior').disabled = (pagination.page === 1);
-            document.getElementById('btnProxima').disabled = (pagination.page === totalPages);
-        }
-
         function exportarParaExcel() {
+            // 1. Pega os valores dos filtros, como antes
             const searchType = document.getElementById('searchType').value;
             const searchValue = document.getElementById('searchValue').value.trim();
             const nroEmpresa = document.getElementById('searchLoja').value;
             
+            // 2. Usa a validação original e correta (Loja e Valor são obrigatórios)
             if (!nroEmpresa) {
                 mostrarErro('❌ Erro: Por favor, selecione uma loja para exportar os dados.');
-                return; // Para a execução da função aqui
+                return;
             }
-
             if (!searchValue) {
                 mostrarErro('❌ Erro: Preencha o campo de busca para exportar.');
                 return;
             }
 
+            // 3. Captura as colunas que estão visíveis (lógica nova e correta)
+            const visibleColumnsCheckboxes = document.querySelectorAll('#columnFilters input[type="checkbox"]:checked');
+            const visibleColumns = Array.from(visibleColumnsCheckboxes).map(cb => cb.getAttribute('data-column-class'));
+            
+            // 4. Monta a URL e chama a API
             let params = new URLSearchParams();
             params.append(searchType, searchValue);
             params.append('nroEmpresa', nroEmpresa);
+            params.append('visibleColumns', visibleColumns.join(','));
             
             const url = `${API_BASE}/api/produtos/export?${params.toString()}`;
             window.open(url, '_blank');
         }
+
+        // --- FUNÇÕES DE EXIBIÇÃO E UI ---
+
+        function exibirResultados(data) {
+            currentData = data.data || [];
+            exibirTabela(currentData);
+            document.getElementById('columnFilters').style.display = currentData.length > 0 ? 'flex' : 'none';
+            document.getElementById('resultCount').textContent = `${currentData.length} produtos encontrados.`;
+        }
+        
+       function exibirTabela(data) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const noResultsDiv = document.getElementById('noResults');
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
+            
+            if (!data || data.length === 0) {
+                ocultarResultados();
+                noResultsDiv.style.display = 'block';
+                return;
+            }
+
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            // Adicionamos a classe e o cabeçalho de volta
+            tableHeader.innerHTML = `
+                <tr role="row">
+                    <th class="col-ean">EAN</th>
+                    <th class="col-cod-prod">Cod Prod</th>
+                    <th class="col-cod-familia">Cod Família</th>
+                    <th class="col-descricao">Descrição</th>
+                    <th class="col-estoque">Estoque</th>
+                    <th class="col-nro-empresa">Nro Empresa</th>
+                    <th class="col-icms">Aliq ICMS</th>
+                    <th class="col-pis">% PIS</th>
+                    <th class="col-cofins">% COFINS</th>
+                    <th class="col-estado-fatur">Estado Fatur</th>
+                    <th class="col-embalagem">Embalagem</th>
+                    <th class="col-fornecedor">Fornecedor</th>
+                    <th class="col-data-inclusao">Data Inclusão</th>
+                    <th class="col-pesavel">Pesável</th>
+                    <th class="col-quem-cadastrou">Quem Cadastrou</th>
+                </tr>
+            `;
+
+            data.forEach((item) => {
+                const row = document.createElement('tr');
+                row.setAttribute('role', 'row');
+                // Adicionamos a classe e o dado da coluna de volta
+                row.innerHTML = `
+                    <td class="col-ean">${item.EAN || '-'}</td>
+                    <td class="col-cod-prod"><strong>${item.CODIGO_PRODUTO ?? '-'}</strong></td>
+                    <td class="col-cod-familia">${item.CODIGO_FAMILIA ?? '-'}</td>
+                    <td class="col-descricao">${item.DESCRICAO || '-'}</td>
+                    <td class="col-estoque">${item.ESTOQUE ?? '-'}</td>
+                    <td class="col-nro-empresa">${item.NRO_EMPRESA ?? '-'}</td>
+                    <td class="col-icms">${item.ALIQUOTA_ICMS ?? '-'}</td>
+                    <td class="col-pis">${item.PERCENT_PIS ?? '-'}</td>
+                    <td class="col-cofins">${item.PERCENT_COFINS ?? '-'}</td>
+                    <td class="col-estado-fatur">${item.ESTADO_FATUR ?? '-'}</td>
+                    <td class="col-embalagem">${item.EMBALAGEM ?? '-'}</td>
+                    <td class="col-fornecedor">${item.FORNECEDOR ?? '-'}</td>
+                    <td class="col-data-inclusao">${formatarData(item.DIA_DA_INCLUSAO)}</td>
+                    <td class="col-pesavel">
+                        <span style="font-weight: bold; color: ${item.ITEM_PESAVEL === 'N' ? 'green' : 'darkorange'}">
+                            ${item.ITEM_PESAVEL === 'S' ? 'Sim' : 'Não'}
+                        </span>
+                    </td>
+                    <td class="col-quem-cadastrou">${item.NOME_DE_QUEM_CADASTROU || '-'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            resultsContainer.style.display = 'block';
+        }
+        
+        function limparResultados() {
+            document.getElementById('searchForm').reset();
+            document.getElementById('searchType').dispatchEvent(new Event('change'));
+            ocultarResultados();
+            limparMensagens();
+            document.getElementById('resultCount').textContent = '';
+            currentData = [];
+        }
+
+        // --- FUNÇÕES AUXILIARES ---
 
         function mostrarLoading(show) {
             document.getElementById('loading').style.display = show ? 'block' : 'none';
@@ -687,26 +704,8 @@
 
         function ocultarResultados() {
             document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('columnFilters').style.display = 'none';
             document.getElementById('noResults').style.display = 'none';
-            document.getElementById('sqlQueryBox').style.display = 'none';
-            document.getElementById('paginationControls').style.display = 'none';
-        }
-
-        function limparResultados() {
-            const searchTypeSelect = document.getElementById('searchType');
-            document.getElementById('searchLoja').value = ''; 
-            document.getElementById('searchValue').value = '';
-            document.getElementById('limit').value = '50';
-            searchTypeSelect.value = 'ean';
-            searchTypeSelect.dispatchEvent(new Event('change')); 
-
-            ocultarResultados();
-            limparMensagens();
-            document.getElementById('resultCount').textContent = '';
-            currentData = [];
-            document.getElementById('tableBody').innerHTML = '';
-            document.getElementById('tableHeader').innerHTML = '';
-            mostrarLoading(false);
         }
 
         function formatarData(dataString) {
