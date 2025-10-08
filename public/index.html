@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -724,4 +725,732 @@
 <footer>
     <p style="text-align: center; color: #ffffff; font-size: 12px; margin-top: 20px;">Desenvolvido por: Ielber Pellegrini</p>
 </footer>
+=======
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./fort-logo.ico" type="image/x-icon">
+    <title>Consulta de Produtos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .header p {
+            opacity: 0.8;
+        }
+
+        .search-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .form-group-flex {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+        
+        .form-group input:disabled,
+        .form-group select:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #dc3545;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .results-section {
+            padding: 30px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+
+        .status-dot.connected {
+            background: #28a745;
+        }
+
+        .column-filters {
+            padding: 15px;
+            background: #f1f3f5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .column-filters strong {
+            margin-right: 10px;
+        }
+        .column-filters label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .results-table.hide-col-cod-familia .col-cod-familia,
+        .results-table.hide-col-estoque .col-estoque,
+        .results-table.hide-col-fornecedor .col-fornecedor,
+        .results-table.hide-col-icms .col-icms,
+        .results-table.hide-col-pis .col-pis,
+        .results-table.hide-col-cofins .col-cofins,
+        .results-table.hide-col-embalagem .col-embalagem,
+        .results-table.hide-col-quem-cadastrou .col-quem-cadastrou {
+            display: none;
+        }
+        .results-table.hide-col-data-inclusao .col-data-inclusao {
+            display: none;
+        }
+
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #dc3545;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        .results-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .results-table th {
+            background: #dc3545;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .results-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 13px;
+        }
+
+        .results-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .form-group-flex, .column-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+             .header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="./fort-logo.png" alt="Logo da Rede Fort" style="width: 50px; height: 50px; border-radius: 5px;">
+            <div>
+                <h1>Consulta de Produtos Rede Fort</h1>
+                <p>Pesquisa de Produtos da Rede Fort</p>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <h2 style="margin-bottom: 20px; color: #495057; text-align: center;">Filtros de Pesquisa</h2>
+            <form class="search-form" id="searchForm">
+
+                <div class="form-group-flex">
+                    <div class="form-group">
+                        <label for="searchType">Tipo de Pesquisa:</label>
+                        <select id="searchType">
+                            <option value="ean" selected>EAN</option>
+                            <option value="codigo_produto">Código do Produto</option>
+                            <option value="descricao">Descrição</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="searchValue">Valor:</label>
+                        <input type="text" id="searchValue" placeholder="Digite o EAN do produto">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="searchLoja">Loja:</label>
+                        <select id="searchLoja">
+                            <option value="" selected disabled>Selecione uma Loja</option>
+                            <option value="2">Loja 2</option>
+                            <option value="3">Loja 3</option>
+                            <option value="5">Loja 5</option>
+                            <option value="6">Loja 6</option>
+                            <option value="7">Loja 7</option>
+                            <option value="8">Loja 8</option>
+                            <option value="9">Loja 9</option>
+                            <option value="10">Loja 10</option>
+                            <option value="11">Loja 11</option>
+                            <option value="12">Loja 12</option>
+                            <option value="13">Loja 13</option>
+                            <option value="14">Loja 14</option>
+                            <option value="15">Loja 15</option>
+                            <option value="16">Loja 16</option>
+                            <option value="17">Loja 17</option>
+                            <option value="18">Loja 18</option>
+                            <option value="19">Loja 19</option>
+                            <option value="20">Loja 20</option>
+                            <option value="21">Loja 21</option>
+                            <option value="23">Loja 23</option>
+                            <option value="24">Loja 24</option>
+                            <option value="25">Loja 25</option>
+                            <option value="26">Loja 26</option>
+                            <option value="27">Loja 27</option>
+                            <option value="28">Loja 28</option>
+                            <option value="29">Loja 29</option>
+                            <option value="30">Loja 30</option>
+                            <option value="31">Loja 31</option>
+                            <option value="32">Loja 32</option>
+                            <option value="35">Loja 35</option>
+                            <option value="36">Loja 36</option>
+                            <option value="37">Loja 37</option>
+                            <option value="39">Loja 39</option>
+                            <option value="40">Loja 40</option>
+                            <option value="41">Loja 41</option>
+                            <option value="42">Loja 42</option>
+                            <option value="44">Loja 44</option>
+                            <option value="46">Loja 46</option>
+                            <option value="47">Loja 47</option>
+                            <option value="48">Loja 48</option>
+                            <option value="49">Loja 49</option>
+                            <option value="50">Loja 50</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="limit">Limite de Resultados:</label>
+                        <select id="limit">
+                            <option value="50" selected>50 registros</option>
+                            <option value="100">100 registros</option>
+                            <option value="200">200 registros</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn">
+                        <span style="font-size: 18px;">🔍</span>
+                        <span style="font-weight: 500;">Buscar</span>
+                    </button>
+                    <button id="btnExportar" type="button" class="btn btn-secondary">
+                        <span style="font-size: 18px;">📤</span>
+                        <span style="font-weight: 500;">Exportar para Excel</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btnLimpar">
+                        <span style="font-size: 18px;">🗑️</span>
+                        <span style="font-weight: 500;">Limpar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="results-section">
+            <div class="status-bar">
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Verificando conexão...</span>
+                </div>
+                <div id="resultCount"></div>
+            </div>
+
+            <div class="column-filters" id="columnFilters" style="display: none;">
+                <strong>Exibir/Ocultar Colunas:</strong>
+                <label><input type="checkbox" data-column-class="col-cod-familia" checked> Cod Família</label>
+
+                <label><input type="checkbox" data-column-class="col-estoque" checked> Estoque</label>
+                <label><input type="checkbox" data-column-class="col-fornecedor" checked> Fornecedor</label>
+                <label><input type="checkbox" data-column-class="col-icms" checked> Aliq. ICMS</label>
+                <label><input type="checkbox" data-column-class="col-pis" checked> % PIS</label>
+                <label><input type="checkbox" data-column-class="col-cofins" checked> % COFINS</label>
+                <label><input type="checkbox" data-column-class="col-embalagem" checked> Embalagem</label>
+                <label><input type="checkbox" data-column-class="col-data-inclusao" checked> Data Inclusão</label>
+                <label><input type="checkbox" data-column-class="col-quem-cadastrou" checked> Quem Cadastrou</label>
+            </div>
+
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Buscando dados...</p>
+            </div>
+
+            <div id="errorMessage" style="display: none;"></div>
+
+            <div id="resultsContainer" style="display: none;">
+                <div class="results-container">
+                    <table class="results-table" id="resultsTable">
+                        <thead>
+                            <tr id="tableHeader"></tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="no-results" id="noResults" style="display: none;">
+                <h3>Nenhum resultado encontrado</h3>
+                <p>Tente ajustar os filtros de pesquisa</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '';
+        let currentData = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            verificarStatusAPI();
+
+            // Mapeamento dos elementos
+            const searchTypeSelect = document.getElementById('searchType');
+            const searchValueInput = document.getElementById('searchValue');
+            const searchForm = document.getElementById('searchForm');
+            const btnLimpar = document.getElementById('btnLimpar');
+            const btnExportar = document.getElementById('btnExportar');
+            const columnFilters = document.getElementById('columnFilters');
+
+            // --- EVENT LISTENERS ---
+
+            // Lógica para mostrar/ocultar colunas
+            columnFilters.addEventListener('change', function(e) {
+                if (e.target.type === 'checkbox') {
+                    const columnClass = e.target.getAttribute('data-column-class');
+                    const table = document.getElementById('resultsTable');
+                    table.classList.toggle('hide-' + columnClass, !e.target.checked);
+                }
+            });
+
+            // Lógica para atualizar o placeholder do campo "Valor"
+            searchTypeSelect.addEventListener('change', function() {
+                const selectedType = this.value;
+                searchValueInput.value = '';
+                if (selectedType === 'codigo_produto') {
+                    searchValueInput.placeholder = 'Digite o código do produto';
+                } else if (selectedType === 'descricao') {
+                    searchValueInput.placeholder = 'Digite parte da descrição';
+                } else {
+                    searchValueInput.placeholder = 'Digite o EAN do produto';
+                }
+                searchValueInput.focus();
+            });
+
+            // Lógica para forçar apenas números
+            searchValueInput.addEventListener('input', function() {
+                const selectedType = searchTypeSelect.value;
+                if (selectedType === 'ean' || selectedType === 'codigo_produto') {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                }
+            });
+
+            // Lógica dos botões
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                executarConsulta();
+            });
+            btnLimpar.addEventListener('click', limparResultados);
+            btnExportar.addEventListener('click', exportarParaExcel);
+        });
+
+        // --- FUNÇÕES PRINCIPAIS ---
+
+        async function verificarStatusAPI() {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (!response.ok) throw new Error('API status not healthy');
+                const data = await response.json();
+                if (data.status === 'healthy') {
+                    statusDot.className = 'status-dot connected';
+                    statusText.textContent = 'Conectado';
+                } else {
+                    throw new Error('API status not healthy');
+                }
+            } catch (error) {
+                statusDot.className = 'status-dot';
+                statusText.textContent = 'Sem Conexão';
+            }
+        }
+        
+        async function executarConsulta() {
+            const searchType = document.getElementById('searchType').value;
+            const searchValue = document.getElementById('searchValue').value.trim();
+            const nroEmpresa = document.getElementById('searchLoja').value;
+            const limit = document.getElementById('limit').value;
+            
+            // Validação original (Loja e Valor são obrigatórios)
+            if (!nroEmpresa) {
+                mostrarErro('❌ Erro: Por favor, selecione uma loja para realizar a busca.');
+                return;
+            }
+            if (!searchValue) {
+                mostrarErro('❌ Erro: O campo de busca não pode estar vazio.');
+                return;
+            }
+            
+            mostrarLoading(true);
+            limparMensagens();
+            ocultarResultados();
+
+            try {
+                let params = new URLSearchParams();
+                params.append(searchType, searchValue);
+                params.append('nroEmpresa', nroEmpresa);
+                params.append('limit', limit);
+                
+                const url = `${API_BASE}/api/produtos?${params.toString()}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    exibirResultados(data);
+                } else {
+                    mostrarErro(data.message || `Erro ${response.status}: Falha na consulta.`);
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                mostrarErro('Erro de conexão com a API. Verifique se o servidor está rodando.');
+            } finally {
+                mostrarLoading(false);
+            }
+        }
+
+        function exportarParaExcel() {
+            // 1. Pega os valores dos filtros, como antes
+            const searchType = document.getElementById('searchType').value;
+            const searchValue = document.getElementById('searchValue').value.trim();
+            const nroEmpresa = document.getElementById('searchLoja').value;
+            
+            // 2. Usa a validação original e correta (Loja e Valor são obrigatórios)
+            if (!nroEmpresa) {
+                mostrarErro('❌ Erro: Por favor, selecione uma loja para exportar os dados.');
+                return;
+            }
+            if (!searchValue) {
+                mostrarErro('❌ Erro: Preencha o campo de busca para exportar.');
+                return;
+            }
+
+            // 3. Captura as colunas que estão visíveis (lógica nova e correta)
+            const visibleColumnsCheckboxes = document.querySelectorAll('#columnFilters input[type="checkbox"]:checked');
+            const visibleColumns = Array.from(visibleColumnsCheckboxes).map(cb => cb.getAttribute('data-column-class'));
+            
+            // 4. Monta a URL e chama a API
+            let params = new URLSearchParams();
+            params.append(searchType, searchValue);
+            params.append('nroEmpresa', nroEmpresa);
+            params.append('visibleColumns', visibleColumns.join(','));
+            
+            const url = `${API_BASE}/api/produtos/export?${params.toString()}`;
+            window.open(url, '_blank');
+        }
+
+        // --- FUNÇÕES DE EXIBIÇÃO E UI ---
+
+        function exibirResultados(data) {
+            currentData = data.data || [];
+            exibirTabela(currentData);
+            document.getElementById('columnFilters').style.display = currentData.length > 0 ? 'flex' : 'none';
+            document.getElementById('resultCount').textContent = `${currentData.length} produtos encontrados.`;
+        }
+        
+       function exibirTabela(data) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const noResultsDiv = document.getElementById('noResults');
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
+            
+            if (!data || data.length === 0) {
+                ocultarResultados();
+                noResultsDiv.style.display = 'block';
+                return;
+            }
+
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            // Adicionamos a classe e o cabeçalho de volta
+            tableHeader.innerHTML = `
+                <tr role="row">
+                    <th class="col-ean">EAN</th>
+                    <th class="col-cod-prod">Cod Prod</th>
+                    <th class="col-cod-familia">Cod Família</th>
+                    <th class="col-descricao">Descrição</th>
+                    <th class="col-estoque">Estoque</th>
+                    <th class="col-nro-empresa">Nro Empresa</th>
+                    <th class="col-icms">Aliq ICMS</th>
+                    <th class="col-pis">% PIS</th>
+                    <th class="col-cofins">% COFINS</th>
+                    <th class="col-estado-fatur">Estado Fatur</th>
+                    <th class="col-embalagem">Embalagem</th>
+                    <th class="col-fornecedor">Fornecedor</th>
+                    <th class="col-data-inclusao">Data Inclusão</th>
+                    <th class="col-pesavel">Pesável</th>
+                    <th class="col-quem-cadastrou">Quem Cadastrou</th>
+                </tr>
+            `;
+
+            data.forEach((item) => {
+                const row = document.createElement('tr');
+                row.setAttribute('role', 'row');
+                // Adicionamos a classe e o dado da coluna de volta
+                row.innerHTML = `
+                    <td class="col-ean">${item.EAN || '-'}</td>
+                    <td class="col-cod-prod"><strong>${item.CODIGO_PRODUTO ?? '-'}</strong></td>
+                    <td class="col-cod-familia">${item.CODIGO_FAMILIA ?? '-'}</td>
+                    <td class="col-descricao">${item.DESCRICAO || '-'}</td>
+                    <td class="col-estoque">${item.ESTOQUE ?? '-'}</td>
+                    <td class="col-nro-empresa">${item.NRO_EMPRESA ?? '-'}</td>
+                    <td class="col-icms">${item.ALIQUOTA_ICMS ?? '-'}</td>
+                    <td class="col-pis">${item.PERCENT_PIS ?? '-'}</td>
+                    <td class="col-cofins">${item.PERCENT_COFINS ?? '-'}</td>
+                    <td class="col-estado-fatur">${item.ESTADO_FATUR ?? '-'}</td>
+                    <td class="col-embalagem">${item.EMBALAGEM ?? '-'}</td>
+                    <td class="col-fornecedor">${item.FORNECEDOR ?? '-'}</td>
+                    <td class="col-data-inclusao">${formatarData(item.DIA_DA_INCLUSAO)}</td>
+                    <td class="col-pesavel">
+                        <span style="font-weight: bold; color: ${item.ITEM_PESAVEL === 'N' ? 'green' : 'darkorange'}">
+                            ${item.ITEM_PESAVEL === 'S' ? 'Sim' : 'Não'}
+                        </span>
+                    </td>
+                    <td class="col-quem-cadastrou">${item.NOME_DE_QUEM_CADASTROU || '-'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            resultsContainer.style.display = 'block';
+        }
+        
+        function limparResultados() {
+            document.getElementById('searchForm').reset();
+            document.getElementById('searchType').dispatchEvent(new Event('change'));
+            ocultarResultados();
+            limparMensagens();
+            document.getElementById('resultCount').textContent = '';
+            currentData = [];
+        }
+
+        // --- FUNÇÕES AUXILIARES ---
+
+        function mostrarLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function limparMensagens() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('errorMessage').innerHTML = '';
+        }
+
+        function mostrarErro(mensagem) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = `<div class="error"><strong>${mensagem}</strong></div>`;
+            errorDiv.style.display = 'block';
+        }
+
+        function ocultarResultados() {
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('columnFilters').style.display = 'none';
+            document.getElementById('noResults').style.display = 'none';
+        }
+
+        function formatarData(dataString) {
+            if (!dataString) return '-';
+            try {
+                const data = new Date(dataString);
+                return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' }) + ' ' + data.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit', minute: '2-digit', timeZone: 'UTC'
+                });
+            } catch (error) {
+                return dataString;
+            }
+        }
+    </script>
+</body>
+<footer>
+    <p style="text-align: center; color: #ffffff; font-size: 12px; margin-top: 20px;">Desenvolvido por: Ielber Pellegrini</p>
+</footer>
+>>>>>>> 978fd87be31ca1ddec247234d59ff7077c3584c4
 </html>

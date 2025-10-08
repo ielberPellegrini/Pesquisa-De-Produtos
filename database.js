@@ -205,8 +205,6 @@ class DatabaseConnection {
     }
 }
 
-
-
 const db = new DatabaseConnection();
 
 module.exports = db;
